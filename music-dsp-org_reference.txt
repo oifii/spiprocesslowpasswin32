@@ -1,0 +1,100 @@
+http://www.musicdsp.org/showArchiveComment.php?ArchiveID=117
+spinote: may not be proper id for archive, use "One pole, one zero LP/HP"
+
+One pole, one zero LP/HP
+
+References : Posted by mistert[AT]inwind[DOT]it
+Code : 
+void SetLPF(float fCut, float fSampling)
+{
+float w = 2.0 * fSampling;
+float Norm;
+
+fCut *= 2.0F * PI;
+Norm = 1.0 / (fCut + w);
+b1 = (w - fCut) * Norm;
+a0 = a1 = fCut * Norm;
+}
+
+void SetHPF(float fCut, float fSampling)
+{
+float w = 2.0 * fSampling;
+float Norm;
+
+fCut *= 2.0F * PI;
+Norm = 1.0 / (fCut + w);
+a0 = w * Norm;
+a1 = -a0;
+b1 = (w - fCut) * Norm;
+}
+
+Where
+out[n] = in[n]*a0 + in[n-1]*a1 + out[n-1]*b1;
+
+
+
+Comments
+
+
+Added on : 14/01/06 by petersteiner[ AT ]hypemart[ DOT ]net
+Comment : 
+              what is n? lol...sorry but i mean this seriously! ;)
+
+
+Added on : 16/01/06 by musicdsp[ AT ]dsparsons[ DOT ]co[ DOT ]uk
+Comment : 
+n is the index of sample being considered.
+
+out[] is an array of samples being output, and in[] is the input array. you would construct a loop such that:
+[Pseudocode]
+loop n{0..numsamples-1}
+  out[n] = in[n]*a0 + in[n-1]*a1 + out[n-1]*b1;
+end loop;
+[/Pseudocode]
+
+You will need some cleverness so that [n-1] doesn't cause an index error when n=0, but I'll leave that to you :)
+
+
+Added on : 18/01/06 by petersteiner[ AT ]hypemart[ DOT ]net
+Comment : 
+whoops - sorry, of course n = number... stupid me ;)
+interesting code, i will see if can adapt that to delphi, shouldn´t be a big deal :)
+
+i assume i dont need to place either setHPF or LPF into the samples loop, just the block itself?
+
+
+
+Added on : 23/01/06 by musicdsp[ AT ]dsparsons[ DOT ]co[ DOT ]uk
+Comment : 
+absolutey - set the coefficients outside of the loop. There is the case of changes being made whilst the loop is running, depends what platform/host you are writing for.
+
+I'm a delphi code as well. Feel free to use my posted address if you need to :) DSP
+
+
+Added on : 21/07/06 by jenaleek[ AT ]yahoo[ DOT ]com
+Comment : 
+Shouldn't that be float w = 2*PI*fSampling; ???
+
+In which case we can simplify:
+
+void SetLPF(float fCut, float fSampling)
+{
+a0 = fCut/(fSampling+fCut);
+a1 = a0;
+b1 = (fSampling-fCut)/(fSampling+fCut);
+}
+
+void SetHPF(float fCut, float fSampling)
+{
+a0 = fSampling/(fSampling+fCut);
+a1 = -a0;
+b1 = (fSampling-fCut)/(fSampling+fCut);
+}
+
+You can keep the norm = 1/(fSampling+fCut) if you like.
+
+
+Added on : 27/09/06 by rouncer81[ AT ]hotmail[ DOT ]com
+Comment : 
+implemented first try worked.
+excellent for what it is.
