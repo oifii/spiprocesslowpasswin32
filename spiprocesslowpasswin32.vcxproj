@@ -91,6 +91,7 @@
   <ItemGroup>
     <None Include="ReadMe.txt" />
     <None Include="small.ico" />
+    <None Include="spi.licenseheader" />
     <None Include="spiprocesslowpasswin32.ico" />
   </ItemGroup>
   <ItemGroup>
